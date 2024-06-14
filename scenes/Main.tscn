@@ -1,0 +1,118 @@
+[gd_scene load_steps=6 format=3 uid="uid://1uk81i3pk1sb"]
+
+[ext_resource type="Script" path="res://scripts/Main.cs" id="1_0wkag"]
+[ext_resource type="Script" path="res://scripts/Grid.cs" id="2_vq7vd"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ccxpo"]
+bg_color = Color(0.572549, 0.572549, 0.572549, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yia2j"]
+bg_color = Color(0.572549, 0.572549, 0.572549, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wqrss"]
+bg_color = Color(0.572549, 0.572549, 0.572549, 1)
+
+[node name="Main" type="Node2D" node_paths=PackedStringArray("_labelStartTile", "_buttonStartTileSet", "_buttonStartTileClear", "_labelEndTile", "_buttonEndTileSet", "_buttonEndTileClear", "_buttonBlockerSet", "_buttonBlockerClear", "_buttonClearPath", "_buttonClearAll", "_buttonStart")]
+script = ExtResource("1_0wkag")
+_labelStartTile = NodePath("VBoxContainer/LabelStartTile")
+_buttonStartTileSet = NodePath("VBoxContainer/ButtonStartTileSet")
+_buttonStartTileClear = NodePath("VBoxContainer/ButtonStartTileClear")
+_labelEndTile = NodePath("VBoxContainer/LabelEndTile")
+_buttonEndTileSet = NodePath("VBoxContainer/ButtonEndTileSet")
+_buttonEndTileClear = NodePath("VBoxContainer/ButtonEndTileClear")
+_buttonBlockerSet = NodePath("VBoxContainer/ButtonBlockerSet")
+_buttonBlockerClear = NodePath("VBoxContainer/ButtonBlockerClear")
+_buttonClearPath = NodePath("VBoxContainer/ButtonClearPath")
+_buttonClearAll = NodePath("VBoxContainer/ButtonClearAll")
+_buttonStart = NodePath("VBoxContainer/ButtonStart")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(180, 1080)
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="LabelStartTile" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Start Tile: [ , ]"
+horizontal_alignment = 1
+
+[node name="ButtonStartTileSet" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ccxpo")
+toggle_mode = true
+text = "Set Start Tile"
+
+[node name="ButtonStartTileClear" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Clear Start Tile"
+
+[node name="LabelEmpty1" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="LabelEndTile" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "End Tile: [ , ]"
+horizontal_alignment = 1
+
+[node name="ButtonEndTileSet" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/pressed = SubResource("StyleBoxFlat_yia2j")
+toggle_mode = true
+text = "Set End Tile"
+
+[node name="ButtonEndTileClear" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Clear End Tile"
+
+[node name="LabelEmpty2" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="ButtonBlockerSet" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/pressed = SubResource("StyleBoxFlat_wqrss")
+toggle_mode = true
+text = "Set Blockers"
+
+[node name="ButtonBlockerClear" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Clear Blockers"
+
+[node name="LabelEmpty3" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="ButtonClearPath" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Clear Path"
+
+[node name="ButtonClearAll" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Clear All"
+
+[node name="LabelEmpty4" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="ButtonStart" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Start Visualizer"
+
+[node name="Grid" type="Node2D" parent="."]
+position = Vector2(190, 10)
+script = ExtResource("2_vq7vd")
+
+[node name="CanvasGroup" type="CanvasGroup" parent="Grid"]
+
+[connection signal="pressed" from="VBoxContainer/ButtonStartTileSet" to="." method="_on_button_start_tile_set_pressed"]
+[connection signal="pressed" from="VBoxContainer/ButtonStartTileClear" to="." method="_on_button_start_tile_clear_pressed"]
+[connection signal="pressed" from="VBoxContainer/ButtonEndTileSet" to="." method="_on_button_end_tile_set_pressed"]
+[connection signal="pressed" from="VBoxContainer/ButtonEndTileClear" to="." method="_on_button_end_tile_clear_pressed"]
+[connection signal="pressed" from="VBoxContainer/ButtonBlockerSet" to="." method="_on_button_blocker_set_pressed"]
+[connection signal="pressed" from="VBoxContainer/ButtonBlockerClear" to="." method="_on_button_blocker_clear_pressed"]
+[connection signal="pressed" from="VBoxContainer/ButtonClearPath" to="." method="_on_button_clear_path_pressed"]
+[connection signal="pressed" from="VBoxContainer/ButtonClearAll" to="." method="_on_button_clear_all_pressed"]
+[connection signal="pressed" from="VBoxContainer/ButtonStart" to="." method="_on_button_start_pressed"]

@@ -2,7 +2,7 @@ using Godot;
 using System.Collections.Generic;
 using System;
 
-public class Astar
+public static class Astar
 {
     private class PfNode : IComparable<PfNode>
     {
@@ -57,9 +57,7 @@ public class Astar
         }
     }
 
-    private Heap<PfNode> _openHeap = new Heap<PfNode>(10);
-
-    private List<Vector2I> GetReturnPath(PfNode node)
+    private static List<Vector2I> GetReturnPath(PfNode node)
     {
         List<Vector2I> path = new List<Vector2I>();
 
@@ -75,7 +73,7 @@ public class Astar
         return path;
     }
 
-    private Dictionary<string, Vector2I> GetValidPts(PfNode currNode, Dictionary<string, Vector2I> steps, Vector2I[] blockers, int colSize, int rowSize)
+    private static Dictionary<string, Vector2I> GetValidPts(PfNode currNode, Dictionary<string, Vector2I> steps, Vector2I[] blockers, int colSize, int rowSize)
     {
         Dictionary<string, Vector2I> validPtDict = new Dictionary<string, Vector2I>();
         Dictionary<string, bool> blockDict = new Dictionary<string, bool>();
@@ -125,11 +123,11 @@ public class Astar
         return validPtDict;
     }
 
-    private PfNode GetExistingNode(Vector2I pt)
+    private static PfNode GetExistingNode(Heap<PfNode> openHeap, Vector2I pt)
     {
-        for (int i = 0; i < _openHeap.Count; i++)
+        for (int i = 0; i < openHeap.Count; i++)
         {
-            PfNode node = _openHeap.GetAtIndex(i);
+            PfNode node = openHeap.GetAtIndex(i);
             if (pt.Equals(node.Pt))
             {
                 return node;
@@ -139,7 +137,7 @@ public class Astar
         return null;
     }
 
-    private int Square(Vector2I a, Vector2I b)
+    private static int Square(Vector2I a, Vector2I b)
     {
         int c = a.X - b.X;
         int d = a.Y = b.Y;
@@ -147,8 +145,9 @@ public class Astar
         return c * c + d * d;
     }
 
-    public List<Vector2I> StartPathFinding(int colSize, int rowSize, Vector2I start, Vector2I end, Vector2I[] blockers)
+    public static List<Vector2I> StartPathFinding(int colSize, int rowSize, Vector2I start, Vector2I end, Vector2I[] blockers)
     {
+        Heap<PfNode> openHeap = new Heap<PfNode>(20);
         PfNode startNode = new PfNode(start);
         PfNode endNode = new PfNode(end);
 
@@ -162,12 +161,12 @@ public class Astar
         steps["bl"] = new Vector2I(-1, 1);
         steps["tl"] = new Vector2I(-1, -1);
 
-        _openHeap.Push(startNode);
+        openHeap.Push(startNode);
         List<Vector2I> closeList = new List<Vector2I>();
 
-        while (_openHeap.Count > 0)
+        while (openHeap.Count > 0)
         {
-            PfNode currNode = _openHeap.Pop();
+            PfNode currNode = openHeap.Pop();
             if (currNode.Pt.Equals(endNode.Pt))
             {
                 return GetReturnPath(currNode);
@@ -208,7 +207,7 @@ public class Astar
                 int h = Square(pt, endNode.Pt);
                 int f = g + h;
 
-                PfNode existingNode = GetExistingNode(pt);
+                PfNode existingNode = GetExistingNode(openHeap, pt);
                 if (existingNode is not null)
                 {
                     if (existingNode.G > g)
@@ -217,14 +216,14 @@ public class Astar
                         existingNode.H = h;
                         existingNode.F = f;
                         existingNode.Parent = currNode;
-                        _openHeap.Fix();
+                        openHeap.Fix();
                     }
 
                     continue;
                 }
 
                 PfNode newNode = new PfNode(pt, currNode, f, g, h);
-                _openHeap.Push(newNode);
+                openHeap.Push(newNode);
             }
         }
 

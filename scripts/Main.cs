@@ -316,8 +316,7 @@ public partial class Main : Node2D
             blockerPts[i] = new Vector2I(_blockers[i].X, _blockers[i].Y);
         }
 
-        Astar astar = new Astar();
-        List<Vector2I> returnPath = astar.StartPathFinding(_colSize, _rowSize, startPt, endPt, blockerPts);
+        List<Vector2I> returnPath = Astar.StartPathFinding(_colSize, _rowSize, startPt, endPt, blockerPts);
         if (returnPath is null)
         {
             GD.Print($"Return path not found");

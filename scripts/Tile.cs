@@ -96,5 +96,33 @@ public partial class Tile : Node2D
         _x = x;
         _y = y;
     }
+
+    public string GetTypeString()
+    {
+        switch (_tileType)
+        {
+            case TileType.Empty:
+                {
+                    return "-";
+                }
+            case TileType.Start:
+                {
+                    return "S";
+                }
+            case TileType.End:
+                {
+                    return "E";
+                }
+            case TileType.Blocker:
+                {
+                    return "B";
+                }
+            case TileType.Path:
+            default:
+                {
+                    return "-";
+                }
+        }
+    }
     #endregion
 }

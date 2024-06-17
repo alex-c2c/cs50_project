@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using System.IO;
 
 public partial class Main : Node2D
 {
@@ -504,6 +505,90 @@ public partial class Main : Node2D
         StartVisualizer();
 
         UpdateControls();
+    }
+
+    private void _on_button_save_pressed()
+    {
+        string projPath = ProjectSettings.GlobalizePath("res://");
+        string filePath = Path.Combine(projPath, "data", "tile_data.txt");
+
+        if (File.Exists(filePath))
+        {
+            File.Delete(filePath);
+        }
+
+        List<string> nodeData = _grid.ConvertGridToData();
+
+        using (StreamWriter outputFile = new StreamWriter(filePath))
+        {
+            foreach (string line in nodeData)
+            {
+                outputFile.WriteLine(line);
+            }
+        }
+    }
+
+    private void _on_button_load_pressed()
+    {
+        string projPath = ProjectSettings.GlobalizePath("res://");
+        string filePath = Path.Combine(projPath, "data", "tile_data.txt");
+
+        if (!File.Exists(filePath))
+        {
+            GD.PushWarning($"Tile data file '{filePath}' does not exists. Skipping load");
+            return;
+        }
+
+        List<string> inputData = new List<string>();
+        using (StreamReader inputFile = new StreamReader(filePath))
+        {
+            string line;
+            while ((line = inputFile.ReadLine()) != null)
+            {
+                inputData.Add(Utils.ReverseRLE(line));
+            }
+        }
+
+        int rowSize = inputData.Count;
+        int colSize = 0;
+
+        if (rowSize > 0)
+        {
+            colSize = inputData[0].Length;
+        }
+
+        if (colSize != _colSize || rowSize != _rowSize)
+        {
+            GD.PrintErr($"ColSize({colSize} vs {_colSize}) or rowSize({rowSize} vs {_rowSize}) does not match. Aborting Load Data.");
+            return;
+        }
+
+        ClearAll();
+
+        _grid.ApplyDataToGrid(inputData);
+
+        Tile startTile = _grid.GetStartTile();
+        if (startTile is not null)
+        {
+            _startTile = startTile;
+        }
+
+        Tile endTile = _grid.GetEndTile();
+        if (endTile is not null)
+        {
+            _endTile = endTile;
+        }
+
+        List<Tile> blockerTiles = _grid.GetBlockerTiles();
+        foreach (Tile tile in blockerTiles)
+        {
+            AddBlocker(tile);
+        }
+
+        _state = State.Idle;
+        UpdateControls();
+        UpdateLabels();
+
     }
     #endregion
 }

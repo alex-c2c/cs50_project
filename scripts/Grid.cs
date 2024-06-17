@@ -1,4 +1,6 @@
 using Godot;
+using System;
+using System.Collections.Generic;
 
 public partial class Grid : Node2D
 {
@@ -90,6 +92,115 @@ public partial class Grid : Node2D
         }
 
         _tileArray[gridIndex.X, gridIndex.Y].SetTileType(type);
+    }
+
+    public Tile GetStartTile()
+    {
+        for (int x = 0; x < _colSize; x++)
+        {
+            for (int y = 0; y < _rowSize; y++)
+            {
+                if (_tileArray[x, y].Type == Tile.TileType.Start)
+                {
+                    return _tileArray[x, y];
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public Tile GetEndTile()
+    {
+        for (int x = 0; x < _colSize; x++)
+        {
+            for (int y = 0; y < _rowSize; y++)
+            {
+                if (_tileArray[x, y].Type == Tile.TileType.End)
+                {
+                    return _tileArray[x, y];
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public List<Tile> GetBlockerTiles()
+    {
+        List<Tile> tiles = new List<Tile>();
+
+        for (int x = 0; x < _colSize; x++)
+        {
+            for (int y = 0; y < _rowSize; y++)
+            {
+                if (_tileArray[x, y].Type == Tile.TileType.Blocker)
+                {
+                    tiles.Add(_tileArray[x, y]);
+                }
+            }
+        }
+
+        return tiles;
+    }
+
+    public List<string> ConvertGridToData()
+    {
+        List<string> data = new List<string>();
+
+        for (int y = 0; y < _rowSize; y++)
+        {
+            string line = "";
+            for (int x = 0; x < _colSize; x++)
+            {
+                line += _tileArray[x, y].GetTypeString();
+            }
+
+            string rle = Utils.ApplyRLE(line);
+            data.Add(rle);
+        }
+
+        return data;
+    }
+
+    public void ApplyDataToGrid(List<string> data)
+    {
+        int colSize = data[0].Length;
+        int rowSize = data.Count;
+
+        int rowIndex = 0;
+        foreach (string line in data)
+        {
+            for (int x = 0; x < line.Length; x++)
+            {
+                switch (line[x])
+                {
+                    case 'S':
+                        {
+                            _tileArray[x, rowIndex].SetTileType(Tile.TileType.Start);
+                        }
+                        break;
+                    case 'E':
+                        {
+                            _tileArray[x, rowIndex].SetTileType(Tile.TileType.End);
+                        }
+                        break;
+                    case 'B':
+                        {
+                            _tileArray[x, rowIndex].SetTileType(Tile.TileType.Blocker);
+                        }
+                        break;
+                    case '-':
+                    default:
+                        {
+                            _tileArray[x, rowIndex].SetTileType(Tile.TileType.Empty);
+                        }
+                        break;
+                }
+            }
+
+            rowIndex++;
+        }
     }
     #endregion
 }

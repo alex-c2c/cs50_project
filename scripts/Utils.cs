@@ -16,7 +16,7 @@ public static class Utils
             {
                 if (count > 0)
                 {
-                    encodedString += $"{count}{currChar}";
+                    encodedString += $"{currChar}{count}";
                     count = 0;
                 }
 
@@ -28,35 +28,77 @@ public static class Utils
 
         if (count > 0)
         {
-            encodedString += $"{count}{currChar}";
+            encodedString += $"{currChar}{count}";
         }
 
         return encodedString;
+    }
+
+    private static string DuplicateChar(char c, string numString)
+    {
+        if (c == Char.MinValue || numString.Length <= 0)
+        {
+            return "";
+        }
+
+        string s = "";
+        int count = numString.ToInt();
+
+        for (int i = 0; i < count; i++)
+        {
+            s += c;
+        }
+
+        return s;
+    }
+
+    private static bool AppendSubstring(char c, string numString, ref string decodedString)
+    {
+        if (c == Char.MinValue || numString.Length <= 0)
+        {
+            return false;
+        }
+
+        int count = numString.ToInt();
+        if (count <= 0)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < count; i++)
+        {
+            decodedString += c;
+        }
+
+        return true;
     }
 
     public static string ReverseRLE(string s)
     {
         string decodedString = "";
         string numString = "";
+        char currChar = Char.MinValue;
 
         for (int i = 0; i < s.Length; i++)
         {
-            if (Char.IsNumber(s[i]))
+            char c = s[i];
+            if (Char.IsLetter(c))
             {
-                numString += s[i];
-            }
-            else
-            {
-                int num = numString.ToInt();
-                for (int j = 0; j < num; j++)
+                if (AppendSubstring(currChar, numString, ref decodedString))
                 {
-                    decodedString += s[i];
+                    currChar = Char.MinValue;
+                    numString = "";
                 }
 
-                numString = "";
-                continue;
+                currChar = c;
+            }
+            else if (Char.IsNumber(c))
+            {
+                numString += c;
             }
         }
+
+        AppendSubstring(currChar, numString, ref decodedString);
 
         return decodedString;
     }

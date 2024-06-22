@@ -126,7 +126,7 @@ public partial class Grid : Node2D
         return null;
     }
 
-    public List<Tile> GetBlockerTiles()
+    public List<Tile> GetTiles(Tile.TileType type)
     {
         List<Tile> tiles = new List<Tile>();
 
@@ -134,7 +134,7 @@ public partial class Grid : Node2D
         {
             for (int y = 0; y < _rowSize; y++)
             {
-                if (_tileArray[x, y].Type == Tile.TileType.Blocker)
+                if (_tileArray[x, y].Type == type)
                 {
                     tiles.Add(_tileArray[x, y]);
                 }
@@ -190,7 +190,12 @@ public partial class Grid : Node2D
                             _tileArray[x, rowIndex].SetTileType(Tile.TileType.Blocker);
                         }
                         break;
-                    case '-':
+                    case 'P':
+                        {
+                            _tileArray[x, rowIndex].SetTileType(Tile.TileType.Path);
+                        }
+                        break;
+                    case 'O':
                     default:
                         {
                             _tileArray[x, rowIndex].SetTileType(Tile.TileType.Empty);

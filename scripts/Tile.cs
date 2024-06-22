@@ -103,7 +103,7 @@ public partial class Tile : Node2D
         {
             case TileType.Empty:
                 {
-                    return "-";
+                    return "O";
                 }
             case TileType.Start:
                 {
@@ -120,7 +120,7 @@ public partial class Tile : Node2D
             case TileType.Path:
             default:
                 {
-                    return "-";
+                    return "O";
                 }
         }
     }

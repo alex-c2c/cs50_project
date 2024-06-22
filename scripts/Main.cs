@@ -268,6 +268,7 @@ public partial class Main : Node2D
         _blockers.Clear();
     }
 
+
     private void ClearPath()
     {
         if (_path is null || _path.Count <= 0)
@@ -290,6 +291,18 @@ public partial class Main : Node2D
         ClearEndTile();
         ClearBlockers();
         ClearPath();
+    }
+
+    private void SetReturnPath(List<Tile> tileList)
+    {
+        List<Vector2I> vList = new List<Vector2I>();
+        for (int i = 0; i < tileList.Count; i++)
+        {
+            Vector2I v = new Vector2I(tileList[i].X, tileList[i].Y);
+            vList.Add(v);
+        }
+
+        SetReturnPath(vList);
     }
 
     private void SetReturnPath(List<Vector2I> path)
@@ -579,16 +592,18 @@ public partial class Main : Node2D
             _endTile = endTile;
         }
 
-        List<Tile> blockerTiles = _grid.GetBlockerTiles();
+        List<Tile> blockerTiles = _grid.GetTiles(Tile.TileType.Blocker);
         foreach (Tile tile in blockerTiles)
         {
             AddBlocker(tile);
         }
 
+        List<Tile> pathTiles = _grid.GetTiles(Tile.TileType.Path);
+        SetReturnPath(pathTiles);
+
         _state = State.Idle;
         UpdateControls();
         UpdateLabels();
-
     }
     #endregion
 }

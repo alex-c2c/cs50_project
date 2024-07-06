@@ -39,6 +39,10 @@ public partial class Main : Node2D
 
     [ExportGroup("UI - Start")]
     [Export] private Button _buttonStart;
+
+    [ExportGroup("Dialogs")]
+    [Export] private FileDialog _saveFileDialog;
+    [Export] private FileDialog _loadFileDialog;
     #endregion
 
     #region Properties
@@ -70,7 +74,6 @@ public partial class Main : Node2D
         _grid.Initialize(_colSize, _rowSize);
 
         _boundingRect = new Rect2(new Vector2(_grid.Position.X, _grid.Position.Y), new Vector2(Constants.NODE_SIZE * _colSize, Constants.NODE_SIZE * _rowSize));
-        GD.Print($"_boundingRect: {_boundingRect}");
     }
 
     public override void _Input(InputEvent @event)
@@ -293,18 +296,6 @@ public partial class Main : Node2D
         ClearPath();
     }
 
-    private void SetReturnPath(List<Tile> tileList)
-    {
-        List<Vector2I> vList = new List<Vector2I>();
-        for (int i = 0; i < tileList.Count; i++)
-        {
-            Vector2I v = new Vector2I(tileList[i].X, tileList[i].Y);
-            vList.Add(v);
-        }
-
-        SetReturnPath(vList);
-    }
-
     private void SetReturnPath(List<Vector2I> path)
     {
         for (int i = 0; i < path.Count; i++)
@@ -520,11 +511,9 @@ public partial class Main : Node2D
         UpdateControls();
     }
 
-    private void _on_button_save_pressed()
+    private void _on_save_file_dialog_file_selected(string filePath)
     {
-        string projPath = ProjectSettings.GlobalizePath("res://");
-        string filePath = Path.Combine(projPath, "data", "tile_data.txt");
-
+        // overwrite existing file
         if (File.Exists(filePath))
         {
             File.Delete(filePath);
@@ -541,17 +530,14 @@ public partial class Main : Node2D
         }
     }
 
-    private void _on_button_load_pressed()
+
+    private void _on_button_save_pressed()
     {
-        string projPath = ProjectSettings.GlobalizePath("res://");
-        string filePath = Path.Combine(projPath, "data", "tile_data.txt");
+        _saveFileDialog.Show();
+    }
 
-        if (!File.Exists(filePath))
-        {
-            GD.PushWarning($"Tile data file '{filePath}' does not exists. Skipping load");
-            return;
-        }
-
+    private void _on_load_file_dialog_file_selected(string filePath)
+    {
         List<string> inputData = new List<string>();
         using (StreamReader inputFile = new StreamReader(filePath))
         {
@@ -595,15 +581,24 @@ public partial class Main : Node2D
         List<Tile> blockerTiles = _grid.GetTiles(Tile.TileType.Blocker);
         foreach (Tile tile in blockerTiles)
         {
-            AddBlocker(tile);
+            _blockers.Add(tile);
         }
 
         List<Tile> pathTiles = _grid.GetTiles(Tile.TileType.Path);
-        SetReturnPath(pathTiles);
+        foreach (Tile tile in pathTiles)
+        {
+            _path.Add(tile);
+        }
 
         _state = State.Idle;
         UpdateControls();
         UpdateLabels();
+
+    }
+
+    private void _on_button_load_pressed()
+    {
+        _loadFileDialog.Show();
     }
     #endregion
 }

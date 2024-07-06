@@ -12,7 +12,7 @@ bg_color = Color(0.572549, 0.572549, 0.572549, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wqrss"]
 bg_color = Color(0.572549, 0.572549, 0.572549, 1)
 
-[node name="Main" type="Node2D" node_paths=PackedStringArray("_labelStartTile", "_buttonStartTileSet", "_buttonStartTileClear", "_labelEndTile", "_buttonEndTileSet", "_buttonEndTileClear", "_buttonBlockerSet", "_buttonBlockerClear", "_buttonClearPath", "_buttonClearAll", "_buttonStart")]
+[node name="Main" type="Node2D" node_paths=PackedStringArray("_labelStartTile", "_buttonStartTileSet", "_buttonStartTileClear", "_labelEndTile", "_buttonEndTileSet", "_buttonEndTileClear", "_buttonBlockerSet", "_buttonBlockerClear", "_buttonClearPath", "_buttonClearAll", "_buttonStart", "_saveFileDialog", "_loadFileDialog")]
 script = ExtResource("1_0wkag")
 _labelStartTile = NodePath("VBoxContainer/LabelStartTile")
 _buttonStartTileSet = NodePath("VBoxContainer/ButtonStartTileSet")
@@ -25,6 +25,8 @@ _buttonBlockerClear = NodePath("VBoxContainer/ButtonBlockerClear")
 _buttonClearPath = NodePath("VBoxContainer/ButtonClearPath")
 _buttonClearAll = NodePath("VBoxContainer/ButtonClearAll")
 _buttonStart = NodePath("VBoxContainer/ButtonStart")
+_saveFileDialog = NodePath("SaveFileDialog")
+_loadFileDialog = NodePath("LoadFileDialog")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 custom_minimum_size = Vector2(180, 1080)
@@ -119,6 +121,21 @@ script = ExtResource("2_vq7vd")
 
 [node name="CanvasGroup" type="CanvasGroup" parent="Grid"]
 
+[node name="SaveFileDialog" type="FileDialog" parent="."]
+ok_button_text = "Save"
+dialog_hide_on_ok = true
+access = 2
+filters = PackedStringArray("*.txt")
+use_native_dialog = true
+
+[node name="LoadFileDialog" type="FileDialog" parent="."]
+title = "Open a File"
+ok_button_text = "Open"
+dialog_hide_on_ok = true
+file_mode = 0
+access = 2
+use_native_dialog = true
+
 [connection signal="pressed" from="VBoxContainer/ButtonStartTileSet" to="." method="_on_button_start_tile_set_pressed"]
 [connection signal="pressed" from="VBoxContainer/ButtonStartTileClear" to="." method="_on_button_start_tile_clear_pressed"]
 [connection signal="pressed" from="VBoxContainer/ButtonEndTileSet" to="." method="_on_button_end_tile_set_pressed"]
@@ -130,3 +147,5 @@ script = ExtResource("2_vq7vd")
 [connection signal="pressed" from="VBoxContainer/ButtonStart" to="." method="_on_button_start_pressed"]
 [connection signal="pressed" from="VBoxContainer/ButtonSave" to="." method="_on_button_save_pressed"]
 [connection signal="pressed" from="VBoxContainer/ButtonLoad" to="." method="_on_button_load_pressed"]
+[connection signal="file_selected" from="SaveFileDialog" to="." method="_on_save_file_dialog_file_selected"]
+[connection signal="file_selected" from="LoadFileDialog" to="." method="_on_load_file_dialog_file_selected"]
